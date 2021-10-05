@@ -1,1 +1,104 @@
-12312
+#include <iostream>
+#include <list>
+#include <array>
+#include <vector>
+#include <ctime>
+using namespace std;
+
+void AddNumber(std::list<int>& task1) {
+    int sum = 0;
+    int it = 0;
+    for (auto elem : task1) {
+        sum += elem;
+        ++it;
+    }
+    sum = sum / it;
+    std::cout << sum << std::endl;
+    task1.push_back(sum);
+}
+
+class Matrix {
+private:
+    int rows = 0;
+    int cols = 0;
+    int matrix[3][3];
+public:
+    Matrix(int rows, int cols) {
+        this->rows = rows;
+        this->cols = cols;
+    };
+
+    void Determinant() {
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                matrix[i][j] = rand() % 5 + 1;
+            }
+        }
+        int det = matrix[0][0] * matrix[1][1] * matrix[2][2] + matrix[2][0] * matrix[0][1] * matrix[1][2]
+            + matrix[1][0] * matrix[2][1] * matrix[0][2] + matrix[1][0] * matrix[2][1] * matrix[0][2]
+            - matrix[2][0] * matrix[1][1] * matrix[0][2] - matrix[1][0] * matrix[0][1] * matrix[2][2]
+            - matrix[0][0] * matrix[1][2] * matrix[2][1];
+        std::cout << det;
+    };
+};
+template <typename T>
+class Iterator {
+private:
+    T it;
+public:
+    Iterator(T it) {
+        this->it = it;
+    }
+    class Iterator
+    bool operator!= (const Iterator& it_end) {
+        return it != it_second;
+    }
+    bool operator== (const Iterator& it_end) {
+        return it == it_second;
+    }
+    T& operator+ (int num) {
+        return *(it + num);
+    }
+    T& operator- (int num) {
+        return *(it - num);
+    }
+    T& operator++ (int) {
+        return *it++;
+    }
+    T& operator-- (int) {
+        return *it--;
+    }
+    T& operator++ () {
+        return *it++;
+    }
+    T& operator-- () {
+        return *it--;
+    }
+    T& operator* () {
+        return *it;
+    }
+    bool operator<< (const Iterator& it_end) {
+        return it != it_second;
+    }
+};
+
+int main() {
+    srand(time(NULL));
+    //Task 1
+    list<int> task1{ 1,2,3,4,5 };
+    AddNumber(task1);
+    for (auto elem : task1) {
+        std::cout << elem;
+    }std::cout << std::endl;
+    //Task 2
+    Matrix m(3, 3);
+    m.Determinant();
+    //Task 3
+    std::vector<int> task3{ 1,3,4,5,1,2};
+    auto it = Iterator(task3.begin());
+    while (it != task3.end()) {
+        std::cout << it << std::endl;
+    }
+
+    return 0;
+}
