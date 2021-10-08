@@ -1,0 +1,68 @@
+#include <iostream>
+#include <vector>
+#include <ctime>
+#include <algorithm>
+#include <cstdlib>
+#include <math.h>
+#include <numeric>
+template<class T>
+class InsertSorted{
+private:
+    T num;
+    int pos = 0;
+public:
+    InsertSorted(std::vector<T> &vec, T n) :  num(n){
+       int tmp = num;
+        while(pos == 0){
+            auto it = find(vec.begin(), vec.end(), tmp);
+            if (it != vec.end())
+                pos = it - vec.begin();
+        else
+            ++tmp;
+        }
+        vec.resize(vec.size()+1);
+        rotate(vec.rbegin(), vec.rbegin()+1, vec.rend()-pos);
+        vec[pos] = num;  
+    }
+};
+
+int main(){
+    //task 1
+    srand(time(NULL));
+    std::vector<int> v(10);
+    generate(v.begin(), v.end(), [](){return rand()%20;});
+    sort(v.begin(), v.end());
+    for_each(v.begin(), v.end(), [](int i) { std::cout << i << " "; });
+    InsertSorted<int> insert(v,4);
+    std::cout << std::endl;
+    for_each(v.begin(), v.end(), [](int i) { std::cout << i << " "; });
+    std::cout << std::endl;
+    
+    //task 2
+    std::vector<double> d(100);
+    generate(d.begin(), d.end(), [](){return (double)rand()/ RAND_MAX*20;;});
+    for_each(d.begin(), d.end(), [](double i) { std::cout << i << " "; });
+    
+    std::cout << std::endl;
+    std::cout << std::endl;
+    
+    std::vector<int> i(100);
+    generate(i.begin(), i.end(), [](){return rand()% 30;;});
+    for_each(i.begin(), i.end(), [](double i) { std::cout << i << " "; });
+    
+    int j = 0;
+    std::vector<double> task2(100);
+    transform(task2.begin(), task2.end(), task2.begin(), [i,d,&j](double sum){ 
+        sum = pow((d[j] - i[j]),2);
+        j++;
+        return sum;
+    });
+    std::cout << std::endl;
+    std::cout << std::endl;
+    for_each(task2.begin(), task2.end(), [](double i) { std::cout << i << " "; });
+    std::cout << std::endl;
+    std::cout << std::endl;
+    double sum = std::accumulate(task2.begin(), task2.end(),0);
+    std::cout << sum <<std::endl;
+    return 0;
+}
