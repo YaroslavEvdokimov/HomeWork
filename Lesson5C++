@@ -1,0 +1,56 @@
+#include <iostream>
+#include <set>
+#include <algorithm>
+#include <iterator>
+#include <string>
+
+template <typename T>
+void Unique( T &in, T &end){
+    for (; in!=end; ++in) {
+       auto tmp_in = in;
+       auto it = find(++tmp_in, end, *in);
+       if (it == end)
+          std::cout << *in << " ";
+    }
+}
+
+int main(){
+    //Task1
+    typedef std::multiset<std::string> StrSet;
+    
+    StrSet word;
+    word.insert("A");
+    word.insert("C");
+    word.insert("A");
+    word.insert("A");
+    word.insert("B");
+    word.insert("C");
+    word.insert("A");
+    word.insert("D");
+    word.insert("E");
+    auto str_begin = std::begin(word), str_end = std::end(word);
+    Unique(str_begin, str_end);
+    
+    std::cout << std::endl;
+    
+    typedef std::multiset<int> IntSet;
+  
+    IntSet num;
+    num.insert(1);
+    num.insert(3);
+    num.insert(1);
+    num.insert(9);
+    num.insert(2);
+    num.insert(4);
+    num.insert(2);
+
+    auto int_begin = std::begin(num), int_end = std::end(num);
+    Unique(int_begin, int_end);
+    
+    //Task2
+    
+    
+    
+    
+    return 0;
+}
