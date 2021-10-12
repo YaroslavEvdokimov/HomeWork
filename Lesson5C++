@@ -3,21 +3,61 @@
 #include <algorithm>
 #include <iterator>
 #include <string>
+#include <map>
+#include <tuple>
 
 template <typename T>
-void Unique( T &in, T &end){
-    for (; in!=end; ++in) {
-       auto tmp_in = in;
-       auto it = find(++tmp_in, end, *in);
-       if (it == end)
-          std::cout << *in << " ";
+void Unique(T& in, T& end) {
+    for (; in != end; ++in) {
+        auto tmp_in = in;
+        auto it = find(++tmp_in, end, *in);
+        if (it == end)
+            std::cout << *in << " ";
     }
 }
 
-int main(){
+void GenText(std::map<int, std::string>& text_map) {
+
+    int Lenght_Word;
+    int Lenght_Sentence;
+    std::string text;
+    std::string text_tmp;
+    char tmp;
+    int text_size;
+    int Sentence = 0;
+
+    for (int i = 0; i < 5; ++i) {
+
+        Lenght_Sentence = rand() % 4 + 1;
+
+        for (int SentenceLong = 0; SentenceLong < Lenght_Sentence; ++SentenceLong) {
+
+            Lenght_Word = rand() % 8 + 1;
+
+            for (int j = 0; j < Lenght_Word; ++j) {
+                text_tmp = (char)(rand() % 20 + 97);
+                if (Sentence == 0) {
+                    tmp = text_tmp[j];
+                    text += (char)toupper(tmp);
+                    Sentence++;
+                }
+                text += text_tmp;
+            }
+            if (Lenght_Sentence != SentenceLong + 1)
+                text += ' ';
+        }
+        Sentence = 0;
+        text += ". ";
+        text_size = text.size();
+        text_map.insert({text_size, text});
+        text.clear();
+    } 
+}
+
+int main() {
     //Task1
     typedef std::multiset<std::string> StrSet;
-    
+
     StrSet word;
     word.insert("A");
     word.insert("C");
@@ -30,11 +70,11 @@ int main(){
     word.insert("E");
     auto str_begin = std::begin(word), str_end = std::end(word);
     Unique(str_begin, str_end);
-    
+
     std::cout << std::endl;
-    
+
     typedef std::multiset<int> IntSet;
-  
+
     IntSet num;
     num.insert(1);
     num.insert(3);
@@ -46,11 +86,13 @@ int main(){
 
     auto int_begin = std::begin(num), int_end = std::end(num);
     Unique(int_begin, int_end);
-    
+    std::cout << std::endl;
+
     //Task2
-    
-    
-    
-    
+    std::map<int, std::string> text;
+    GenText(text);
+    std::for_each(text.begin(), text.end(), [](std::pair<int, std::string > item) {
+            std::cout << item.first << " " << item.second << "\n"; });
+
     return 0;
 }
