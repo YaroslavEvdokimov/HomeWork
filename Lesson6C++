@@ -1,1 +1,123 @@
+#include "Lesson6C++.h"
+#include <thread>
+#include <mutex>
+#include <iostream>
+#include <execution>
+#include <map>
+#include <tuple>
+#include <algorithm>
+std::mutex m;
 
+template <typename T>
+void pcout(T print) {
+	m.lock();
+	std::cout << print << std::endl;
+	m.unlock();
+}
+
+int ArrayNamber(int a) {
+	int tmp_num;
+	if (a == 1) {
+		return 1;
+	}
+	for (int i = 2; i < a; i++) {
+		for (int j = 2; j * j <= i; j++)
+		{
+			if (i % j == 0)
+				break;
+			if (j+1 > sqrt(i)) {
+				tmp_num = i;
+			}
+		}
+	}
+	return tmp_num;
+
+}
+
+
+class Home_Human {
+protected:
+	std::map<int, std::string> cupboard;
+public:
+	Home_Human() {};
+
+	void Buy_Thing(const std::string& name, const double& price) {
+		m.lock();
+		cupboard.insert({ price,name });
+		m.unlock();
+	}
+	void Print_Cupboard() {
+		for_each(cupboard.begin(), cupboard.end(),
+			[](std::pair<int, std::string> open) {
+				std::cout << "Human:" << open.first << " " << open.second << "\n";
+			});
+	}
+
+	void Missing(int price, std::string a) {
+		//cupboard.erase({ price, a });
+	}
+
+	std::map<int, std::string> Get_Cupboard(){
+		return cupboard;
+	}
+};
+
+class Home_Thief {
+private:
+	std::map<int, std::string> thief_cupboard;
+public:
+	Home_Thief() {};
+
+	void Theft(Home_Human& human) {
+		m.lock();
+		std::map<int, std::string> cupboard = human.Get_Cupboard();
+		for_each(cupboard.begin(), cupboard.end(),
+			[&](std::pair<int, std::string> open) {
+				thief_cupboard.insert({ open.first,open.second });
+				human.Missing(open.first);
+				
+			});
+		m.unlock();
+	}
+	void Print_Cupboard_Thief() {
+		for_each(thief_cupboard.begin(), thief_cupboard.end(),
+			[](std::pair<int, std::string> open) {
+				std::cout << "Theft:" << open.first << " " << open.second << "\n";
+			});
+	}
+};
+
+int main()
+{
+	//Task 1
+	std::thread th1(pcout<int>, 1);
+	std::thread th2(pcout<char>, 'c');
+	std::thread th3(pcout<double>, 3.2);
+	th1.join();
+	th2.join();
+	th3.join();
+
+	//Task 2
+	int tmp;
+	std::thread th4([&]() { tmp = ArrayNamber(100); });
+	th4.join();
+	std::cout << tmp << std::endl;
+
+	//Task 3
+	Home_Human h;
+	Home_Thief t;
+
+	std::thread human(&Home_Human::Buy_Thing, &h, "Phone", 1000);
+	std::thread human1(&Home_Human::Buy_Thing, &h, "Box1", 3000);
+	std::thread human2(&Home_Human::Buy_Thing, &h, "Box2", 230);
+	std::thread thief(&Home_Thief::Theft, &t, h);
+	
+	human.join();
+	human1.join();
+	human2.join();
+	thief.join();
+	h.Print_Cupboard();
+    t.Print_Cupboard_Thief();
+
+	return 0;
+}
