@@ -5,7 +5,7 @@
 
 namespace MyTools {
 
-    // Палитра цветов от 0 до 15
+    // ГЏГ Г«ГЁГІГ°Г  Г¶ГўГҐГІГ®Гў Г®ГІ 0 Г¤Г® 15
     enum ConsoleColor
     {
         CC_Black = 0,
@@ -58,6 +58,7 @@ namespace MyTools {
         LogSingleton() { }
         LogSingleton(const LogSingleton& root) = delete;
         LogSingleton& operator=(const LogSingleton&) = delete;
+	~LogSingleton() { }
     };
 
 	//=============================================================================================
