@@ -3,14 +3,18 @@
 
 #include "SBomber.h"
 #include "MyTools.h"
+#include "Time.h"
 
 using namespace std;
+using namespace MyTools;
 
 //========================================================================================================================
 
 int main(void)
 {
-    MyTools::OpenLogFile("log.txt");
+    Timer time("OpenLogFile");
+    LogSingletonProxy::getInstance()->OpenLogFile("log.txt");
+    
 
     SBomber game;
 
@@ -32,7 +36,7 @@ int main(void)
 
     } while (!game.GetExitFlag());
 
-    MyTools::CloseLogFile();
-
+    Timer time1("OpenLogFile");
+    LogSingletonProxy::getInstance()->CloseLogFile();
     return 0;
 }

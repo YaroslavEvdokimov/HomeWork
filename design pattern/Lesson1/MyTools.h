@@ -1,11 +1,14 @@
 #pragma once
-
+#include <iostream>
 #include <stdint.h>
 #include <string>
+#include <chrono>
+#include <vector>
+#include "Time.h"
 
 namespace MyTools {
 
-    // √è√†√´√®√≤√∞√† √∂√¢√•√≤√Æ√¢ √Æ√≤ 0 √§√Æ 15
+    // œ‡ÎËÚ‡ ˆ‚ÂÚÓ‚ ÓÚ 0 ‰Ó 15
     enum ConsoleColor
     {
         CC_Black = 0,
@@ -40,26 +43,47 @@ namespace MyTools {
 
 	//=============================================================================================
 
-    class LogSingleton {
+    class ILog {
     public:
+        virtual void  OpenLogFile(const std::string& FN) = 0;
+        virtual void  CloseLogFile() = 0;
+        virtual void  WriteToLog(const std::string& str) = 0;
+        virtual void  WriteToLog(const std::string& str, int n) = 0;
+        virtual void  WriteToLog(const std::string& str, double d) = 0;
+    };
 
-        static LogSingleton& getInstance()
-        {
-            static LogSingleton theInstance;
-            return theInstance;
+    class RealLog : public ILog {
+    public:
+        void  OpenLogFile(const std::string& FN) override;
+        void  CloseLogFile() override;
+        void  WriteToLog(const std::string& str)override;
+        void  WriteToLog(const std::string& str, int n) override;
+        void  WriteToLog(const std::string& str, double d) override;
+    };
+
+    class LogSingletonProxy : public ILog {
+    public:
+        static RealLog* getInstance() {      
+            static RealLog* real_log = new RealLog;
+            return real_log;
         }
-        void __fastcall OpenLogFile(const std::string& FN);
+
+        void OpenLogFile(const std::string& FN);
         void CloseLogFile();
-        void __fastcall WriteToLog(const std::string& str);
-        void __fastcall WriteToLog(const std::string& str, int n);
-        void __fastcall WriteToLog(const std::string& str, double d);
+        void WriteToLog(const std::string& str);
+        void WriteToLog(const std::string& str, int n);
+        void WriteToLog(const std::string& str, double d);
 
     private:
-        LogSingleton() { }
-        LogSingleton(const LogSingleton& root) = delete;
-        LogSingleton& operator=(const LogSingleton&) = delete;
-	~LogSingleton() { }
+        std::vector<double> timer;
+       
+        LogSingletonProxy() {}
+        LogSingletonProxy(const RealLog& root) = delete;
+        LogSingletonProxy& operator=(const RealLog&) = delete;
+        LogSingletonProxy& operator=(RealLog&&) = delete;
+        ~LogSingletonProxy() {}
     };
+
 
 	//=============================================================================================
 

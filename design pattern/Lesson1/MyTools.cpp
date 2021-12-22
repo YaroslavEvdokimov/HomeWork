@@ -70,12 +70,12 @@ namespace MyTools {
 
     //=============================================================================================
 
-    void __fastcall  LogSingleton::OpenLogFile(const string& FN)
+    void  RealLog::OpenLogFile(const string& FN)
     {
         logOut.open(FN, ios_base::out);
     }
 
-    void  LogSingleton::CloseLogFile()
+    void RealLog::CloseLogFile()
     {
         if (logOut.is_open())
         {
@@ -93,7 +93,7 @@ namespace MyTools {
         return string(buf);
     }
 
-    void __fastcall  LogSingleton::WriteToLog(const string& str)
+    void  RealLog::WriteToLog(const string& str)
     {
         if (logOut.is_open())
         {
@@ -101,7 +101,7 @@ namespace MyTools {
         }
     }
 
-    void __fastcall  LogSingleton::WriteToLog(const string& str, int n)
+    void  RealLog::WriteToLog(const string& str, int n)
     {
         if (logOut.is_open())
         {
@@ -109,7 +109,7 @@ namespace MyTools {
         }
     }
 
-    void __fastcall  LogSingleton::WriteToLog(const string& str, double d)
+    void  RealLog::WriteToLog(const string& str, double d)
     {
         if (logOut.is_open())
         {
@@ -121,57 +121,3 @@ namespace MyTools {
 
 
 } // namespace MyTools
-
-#include <iostream>
-
-class ILog {
-    public:
-        virtual void  OpenLogFile(const std::string& FN) = 0;
-        virtual void CloseLogFile();
-        virtual void  WriteToLog(const std::string& str) = 0;
-        virtual void  WriteToLog(const std::string& str, int n) = 0;
-        virtual void  WriteToLog(const std::string& str, double d) = 0;
-    };
-
-class RealLog: public ILog {
-    public:
-        static RealLog& getInstance(){
-            static RealLog theInstance ;
-            return theInstance;
-        };
-        void  OpenLogFile(const std::string& FN);
-        void  CloseLogFile() {std::cout << "Test" << std::endl;};
-        void  WriteToLog(const std::string& str) ;
-        void  WriteToLog(const std::string& str, int n);
-        void  WriteToLog(const std::string& str, double d);
-    };
-    
-    class LogSingletonProxy: public ILog {
-    public:
-        static RealLog& getInstance(){
-            static RealLog theInstance ;
-            std::cout << "Test" << std::endl;
-            return theInstance;
-        }
-        void OpenLogFile(const std::string& FN);
-        void CloseLogFile() {std::cout << "Test" << std::endl;};
-        void WriteToLog(const std::string& str);
-        void WriteToLog(const std::string& str, int n);
-        void WriteToLog(const std::string& str, double d);
-
-    private:
-        LogSingletonProxy(){}
-        LogSingletonProxy(const RealLog& root) = delete;
-        LogSingletonProxy& operator=(const RealLog&) = delete;
-        LogSingletonProxy& operator=(RealLog&&) = delete;
-	    ~LogSingletonProxy() {}
-    };
-
-
-int main(){ 
-    LogSingletonProxy::getInstance().CloseLogFile();
-    std::cout<<"Hello World";
-
-    return 0;
-}
-
