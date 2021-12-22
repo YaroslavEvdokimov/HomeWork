@@ -122,58 +122,6 @@ namespace MyTools {
 
 } // namespace MyTools
 
-
-class ILog {
-    public:
-        virtual void __fastcall OpenLogFile(const std::string& FN) = 0;
-        virtual void CloseLogFile();
-        virtual void __fastcall WriteToLog(const std::string& str) = 0;
-        virtual void __fastcall WriteToLog(const std::string& str, int n) = 0;
-        virtual void __fastcall WriteToLog(const std::string& str, double d) = 0;
-    };
-
-class Log: public ILog {
-    public:
-        static Log& getInstance(){}
-        void __fastcall OpenLogFile(const std::string& FN);
-        void CloseLogFile();
-        void __fastcall WriteToLog(const std::string& str);
-        void __fastcall WriteToLog(const std::string& str, int n);
-        void __fastcall WriteToLog(const std::string& str, double d)
-    };
-    
-    class LogSingletonProxy: public ILog {
-    public:
-
-        static LogSingletonProxy& getInstance()
-        {
-            static LogSingletonProxy theInstance;
-            return theInstance;
-        }
-        void __fastcall OpenLogFile(const std::string& FN);
-        void CloseLogFile();
-        void __fastcall WriteToLog(const std::string& str);
-        void __fastcall WriteToLog(const std::string& str, int n);
-        void __fastcall WriteToLog(const std::string& str, double d);
-
-    private:
-        LogSingletonProxy() { }
-        LogSingletonProxy(const LogSingleton& root) = delete;
-        LogSingletonProxy& operator=(const LogSingleton&) = delete;
-	    ~LogSingletonProxy() { }
-    };
-
-
-
-
-
-
-
-
-
-
-
-
 #include <iostream>
 
 class ILog {
@@ -185,41 +133,43 @@ class ILog {
         virtual void  WriteToLog(const std::string& str, double d) = 0;
     };
 
-class Log: public ILog {
+class RealLog: public ILog {
     public:
-        static Log& getInstance();
-        void  OpenLogFile(const std::string& FN) override;
-        void CloseLogFile() override {std::cout << "Test" << std::endl;};
-        void  WriteToLog(const std::string& str) override;
-        void  WriteToLog(const std::string& str, int n) override;
-        void  WriteToLog(const std::string& str, double d) override;
+        static RealLog& getInstance(){
+            static RealLog theInstance ;
+            return theInstance;
+        };
+        void  OpenLogFile(const std::string& FN);
+        void  CloseLogFile() {std::cout << "Test" << std::endl;};
+        void  WriteToLog(const std::string& str) ;
+        void  WriteToLog(const std::string& str, int n);
+        void  WriteToLog(const std::string& str, double d);
     };
     
     class LogSingletonProxy: public ILog {
     public:
-        static Log* getInstance()
-        {
-            static Log *theInstance;
+        static RealLog& getInstance(){
+            static RealLog theInstance ;
+            std::cout << "Test" << std::endl;
             return theInstance;
         }
         void OpenLogFile(const std::string& FN);
-        void CloseLogFile() override {std::cout << "Test" << std::endl;};
+        void CloseLogFile() {std::cout << "Test" << std::endl;};
         void WriteToLog(const std::string& str);
         void WriteToLog(const std::string& str, int n);
         void WriteToLog(const std::string& str, double d);
 
     private:
-        Log *theInstance;
-        LogSingletonProxy() { }
-        LogSingletonProxy(const Log& root) = delete;
-        LogSingletonProxy& operator=(const Log&) = delete;
+        LogSingletonProxy(){}
+        LogSingletonProxy(const RealLog& root) = delete;
+        LogSingletonProxy& operator=(const RealLog&) = delete;
+        LogSingletonProxy& operator=(RealLog&&) = delete;
 	    ~LogSingletonProxy() {}
     };
 
 
 int main(){ 
-    LogSingletonProxy::getInstance()->CloseLogFile();
-    
+    LogSingletonProxy::getInstance().CloseLogFile();
     std::cout<<"Hello World";
 
     return 0;
